@@ -8,7 +8,7 @@ const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  role: z.enum(['user', 'manager']).optional().default('user'),
+  role: z.literal('user').optional(),
   phone: z.string().optional(),
   college: z.string().optional(),
   course: z.string().optional(),
@@ -62,21 +62,18 @@ export async function POST(req: NextRequest) {
     const passwordHash = await hashPassword(data.password);
     const now = new Date();
 
-    const role = data.role || 'user';
-
     const user = await db.user.create({
       data: {
         name: data.name.trim(),
         email: cleanEmail,
         phone: data.phone || null,
         passwordHash,
-        role,
+        role: 'user',
         lastLoginAt: now,
         lastSeenAt: now,
         isOnline: true,
-        ...(role === 'user' ? {
-          profile: {
-            create: {
+        profile: {
+          create: {
               college: data.college || 'University Student',
               course: data.course || 'B.Tech',
               branch: data.branch || 'Computer Science',
@@ -90,9 +87,8 @@ export async function POST(req: NextRequest) {
               github: data.github || null,
               completenessStage: 1,
               completenessPercent: 20,
-            },
           },
-        } : {}),
+        },
         loginLogs: {
           create: [
             {
@@ -113,7 +109,7 @@ export async function POST(req: NextRequest) {
       role: user.role,
     });
 
-    const redirectTo = user.role === 'manager' ? '/manager' : '/resume';
+    const redirectTo = '/resume';
 
     const response = NextResponse.json({
       success: true,

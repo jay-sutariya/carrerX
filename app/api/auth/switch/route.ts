@@ -3,6 +3,9 @@ import { db } from '@/lib/db';
 import { signToken, AUTH_COOKIE_NAME } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
   try {
     const body = await req.json();
     const { targetEmail } = body;
@@ -40,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     response.cookies.set(AUTH_COOKIE_NAME, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24 * 7,

@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DATABASE_URL_UNPOOLED")
 }
 
 model User {
@@ -231,6 +232,20 @@ model Message {
   @@index([senderId])
   @@index([receiverId])
   @@index([connectionId])
+}
+
+model ChannelMessage {
+  id            String   @id @default(cuid())
+  channelId     String
+  senderId      String
+  senderName    String
+  senderCollege String
+  senderRole    String?
+  senderPhoto   String?
+  text          String
+  createdAt     DateTime @default(now())
+
+  @@index([channelId, createdAt])
 }
 
 model SkillMatch {

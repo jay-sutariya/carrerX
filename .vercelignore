@@ -1,0 +1,7 @@
+prisma/dev.db
+data/channel_messages.json
+.env
+.env.*
+!.env.example
+.agents/
+skills-lock.json

@@ -3,6 +3,9 @@ import { getCurrentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 export async function POST(req: NextRequest) {
+  if (process.env.NODE_ENV === 'production') {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  }
   try {
     const session = await getCurrentUser();
     if (!session) {

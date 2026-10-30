@@ -36,6 +36,8 @@ interface DemoStudent {
   tag: string;
 }
 
+const SHOW_DEMO_USERS = process.env.NODE_ENV !== 'production';
+
 const DEFAULT_DEMO_USERS: DemoStudent[] = [
   {
     id: 'user_dhruvila',
@@ -254,6 +256,7 @@ function LoginForm() {
       </div>
 
       {/* Peer Chat Testing Guide Callout */}
+      {SHOW_DEMO_USERS && (
       <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#0d172e] via-[#091224] to-[#0b1b36] border border-cyan-500/30 shadow-lg shadow-cyan-500/10 space-y-2">
         <div className="flex items-center gap-2 text-cyan-300 font-bold text-xs sm:text-sm font-heading">
           <MessageSquare className="w-4 h-4 text-cyan-400" />
@@ -267,10 +270,12 @@ function LoginForm() {
           3. Click <strong className="text-white">⚡ 1-Click Login</strong> on <strong className="text-emerald-300">Priya Patel</strong> → Open <strong className="text-white">Network</strong> → Click <strong className="text-cyan-300">Dhruvila</strong> → <span className="text-emerald-400 font-semibold">Dhruvila&apos;s message is right there!</span> Type a reply, and both peers can talk back and forth freely.
         </p>
       </div>
+      )}
 
       {/* Main 2-Column Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Column: Demo Accounts Directory */}
+        {SHOW_DEMO_USERS && (
         <div className="lg:col-span-7 space-y-4">
           <div className="glass-panel p-5 sm:p-6 rounded-2xl border border-white/10 space-y-4 shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -435,14 +440,15 @@ function LoginForm() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Right Column: Standard Sign In Form Card */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className={SHOW_DEMO_USERS ? 'lg:col-span-5 space-y-4' : 'lg:col-span-12 max-w-lg mx-auto w-full space-y-4'}>
           <div className="glass-panel p-6 sm:p-8 rounded-2xl space-y-5 border border-white/10 shadow-2xl relative overflow-hidden bg-[#0a101f]/95">
             <div className="space-y-1">
               <h3 className="font-heading font-extrabold text-xl text-white">Direct Account Sign In</h3>
               <p className="text-xs text-slate-400">
-                Sign in with any demo account or your registered credentials
+                {SHOW_DEMO_USERS ? 'Sign in with any demo account or your registered credentials' : 'Sign in with your CareerX account'}
               </p>
             </div>
 
@@ -463,7 +469,7 @@ function LoginForm() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@careerx.dev or aarav.sharma@demo.careerx.dev"
+                  placeholder={SHOW_DEMO_USERS ? 'name@careerx.dev or aarav.sharma@demo.careerx.dev' : 'you@example.com'}
                   required
                   className="w-full px-3.5 py-2.5 rounded-xl bg-[#070b14]/80 border border-white/10 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 transition-all font-mono"
                 />
@@ -475,9 +481,7 @@ function LoginForm() {
                   <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
                     <Lock className="w-3.5 h-3.5 text-indigo-400" /> Password
                   </label>
-                  <span className="text-[10px] font-mono text-cyan-400">
-                    Students: CareerX@2026
-                  </span>
+                  {SHOW_DEMO_USERS && <span className="text-[10px] font-mono text-cyan-400">Students: CareerX@2026</span>}
                 </div>
                 <div className="relative">
                   <input

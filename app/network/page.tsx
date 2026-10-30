@@ -1,5 +1,7 @@
 'use client';
 
+const SHOW_DEMO_TOOLS = process.env.NODE_ENV !== 'production';
+
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
@@ -441,10 +443,10 @@ export default function NetworkPage() {
                 window.location.href = '/login';
               }}
               className="px-3.5 py-1.5 rounded-2xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-slate-300 hover:text-rose-200 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
-              title="Log out and choose another demo student from the login page"
+              title="Log out"
             >
               <LogOut className="w-3.5 h-3.5 text-slate-400" />
-              <span>Switch Account / Logout</span>
+              <span>Log out</span>
             </button>
           </div>
         </div>
@@ -790,7 +792,7 @@ export default function NetworkPage() {
               >
                 MLOps Review
               </button>
-              {chatMode === 'direct' && activeBuddy && (
+              {SHOW_DEMO_TOOLS && chatMode === 'direct' && activeBuddy && (
                 <button
                   type="button"
                   onClick={handleSimulatePartnerReply}

@@ -45,3 +45,6 @@ Thumbs.db
 
 # Typescript build info
 *.tsbuildinfo
+.vercel/
+.agents/
+skills-lock.json

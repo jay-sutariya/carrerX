@@ -8,11 +8,11 @@ Every score, recommendation, skill graph, and roadmap is computed dynamically fr
 
 ## ⚡ Tech Stack
 
-- **Frontend:** Next.js 14+ (App Router) + TypeScript + Tailwind CSS
+- **Frontend:** Next.js 16 (App Router) + TypeScript + Tailwind CSS
 - **UI & Motion:** Glassmorphic Cyber-Midnight Design Tokens, Framer Motion, Lucide React
 - **Visualizations:** Interactive HTML5 Canvas Force-Directed Skill Relationship Graph, SVG Dual Radar Chart, SVG Circular Readiness Dial
 - **Backend:** Next.js Route Handlers (API Routes)
-- **Database & ORM:** Prisma ORM with SQLite (default zero-config local dev) / PostgreSQL compatible
+- **Database & ORM:** Prisma ORM with PostgreSQL
 - **Auth:** Multi-step registration, `bcryptjs` password hashing, Stateless JWT stored in HTTP-Only secure cookies
 - **Resume Intelligence:** Server-side PDF/DOCX text extraction (`pdf-parse`, `mammoth`) + structured skill/project extractor (`/lib/ai/resumeExtractor.ts`)
 - **Scoring Engine:** Pure, unit-testable scoring functions (`/lib/scoring/`) with academic year weighting
@@ -30,14 +30,14 @@ npm install
 ```
 
 ### 2. Configure Environment Variables
-Copy `.env.example` to `.env`:
+Create a PostgreSQL database, copy `.env.example` to `.env`, and set `DATABASE_URL` and a unique `JWT_SECRET` (generate one with `openssl rand -hex 32`):
 ```bash
 cp .env.example .env
 ```
 
 ### 3. Initialize Database & Seed Sample Profiles
 ```bash
-npm run db:push
+npm run db:migrate
 npm run db:seed
 ```
 
@@ -49,7 +49,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🔑 Demo Login Credentials (Pre-seeded)
+## 🔑 Local Demo Login Credentials (Pre-seeded)
 
 - **Email:** `dhruvila@careerx.dev`
 - **Password:** `CareerX@2026`
@@ -57,6 +57,8 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Readiness Score:** 84/100 (Tier 1: Job-Ready Contender)
 
 Or create a brand new account at `/signup` to test the progressive onboarding gate and locked states with **0 fabricated numbers**.
+
+For Vercel setup, see [DEPLOYMENT.md](./DEPLOYMENT.md). Production seeding creates resources and optionally a manager account; it does not create demo accounts.
 
 ---
 

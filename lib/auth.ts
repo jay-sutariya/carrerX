@@ -3,8 +3,15 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { db } from './db';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'careerx_default_jwt_secret_dev_2026';
 export const AUTH_COOKIE_NAME = 'careerx_token';
+
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error('JWT_SECRET must be set to a random value of at least 32 characters');
+  }
+  return secret;
+}
 
 export interface UserSession {
   userId: string;
@@ -23,12 +30,12 @@ export async function comparePassword(password: string, hash: string): Promise<b
 }
 
 export function signToken(payload: UserSession): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: '7d' });
 }
 
 export function verifyToken(token: string): UserSession | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as UserSession;
+    return jwt.verify(token, getJwtSecret()) as UserSession;
   } catch {
     return null;
   }
@@ -89,33 +96,6 @@ export async function getAuthenticatedUser(): Promise<any | null> {
 }
 
 export async function getCurrentUser(): Promise<{ user: any; profile: any } | null> {
-  try {
-    const authUser = await getAuthenticatedUser();
-    if (authUser) {
-      return { user: authUser, profile: authUser.profile };
-    }
-
-    // Default student user fallback if not logged in (strictly user role, never manager)
-    const fallbackUser = await db.user.findFirst({
-      where: { role: 'user' },
-      include: {
-        profile: true,
-        resumeData: true,
-        learningProfile: true,
-        readinessScores: { orderBy: { computedAt: 'desc' }, take: 1 },
-        careerMatches: { orderBy: { matchScore: 'desc' } },
-        roadmaps: {
-          include: { phases: { orderBy: { phaseNumber: 'asc' } } },
-          orderBy: { generatedAt: 'desc' },
-          take: 1,
-        },
-      },
-    });
-
-    if (!fallbackUser) return null;
-    return { user: fallbackUser, profile: fallbackUser.profile };
-  } catch (error) {
-    console.error('getCurrentUser error:', error);
-    return null;
-  }
+  const user = await getAuthenticatedUser();
+  return user ? { user, profile: user.profile } : null;
 }
